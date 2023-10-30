@@ -9,5 +9,5 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
 
     Optional<UserEntity> findByLink(String link);
 
-    Optional<UserEntity> findByUsername(String link);
+    Optional<UserEntity> findByUsername(String username);
 }

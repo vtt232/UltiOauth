@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
-public class ClientController {
+public class TestController {
 
     @GetMapping("oauth/client2")
     @ResponseBody
@@ -19,11 +19,7 @@ public class ClientController {
         return 10;
     }
 
-    @GetMapping("/access")
-    @ResponseBody
-    public String clientLogins() {
-        return "http://localhost:8080/oauth/login";
-    }
+
 
 
 }

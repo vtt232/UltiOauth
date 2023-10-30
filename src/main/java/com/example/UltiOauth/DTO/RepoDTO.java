@@ -9,7 +9,8 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class NoteDTO {
-    private long id;
-    private String content;
+public class RepoDTO {
+    private String name;
+    private String url;
+    private String language;
 }

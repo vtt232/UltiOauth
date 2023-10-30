@@ -20,7 +20,7 @@ public class initData implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        noteRepository.save(new NoteEntity(1L, "Started project"));
+        /*noteRepository.save(new NoteEntity(1L, "Started project"));
         noteRepository.save(new NoteEntity(2L, "Implemented 30%"));
         noteRepository.save(new NoteEntity(3L, "Implemented 40"));
         noteRepository.save(new NoteEntity(4L, "Implemented 50%"));
@@ -29,7 +29,7 @@ public class initData implements ApplicationRunner {
         noteRepository.save(new NoteEntity(7L, "Implemented 80%"));
         noteRepository.save(new NoteEntity(8L, "Implemented 90%"));
         noteRepository.save(new NoteEntity(9L, "Implemented 100%"));
-        noteRepository.save(new NoteEntity(10L, "Completed all"));
+        noteRepository.save(new NoteEntity(10L, "Completed all"));*/
 
     }
 }

@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class NoteDTO {
-    private long id;
-    private String content;
+public class UserDTO {
+    private String login;
+    private String url;
 }

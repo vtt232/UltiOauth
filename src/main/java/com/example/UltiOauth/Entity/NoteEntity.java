@@ -1,17 +1,17 @@
 package com.example.UltiOauth.Entity;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
 
-@Entity
-@Table(name = "note_table")
-@Data
+@AllArgsConstructor
 @NoArgsConstructor
+@Entity
+@Data
+@Table(name = "note_table")
+@Builder(toBuilder = true)
 public class NoteEntity {
 
     @Id
@@ -21,24 +21,9 @@ public class NoteEntity {
     @Column
     private String content;
 
-    public NoteEntity(Long id, String content) {
-        this.id = id;
-        this.content = content;
-    }
+    @ManyToOne(cascade= CascadeType.ALL)
+    @JoinColumn(name = "repo_id")
+    private RepoEntity repo;
 
-    public Long getId() {
-        return id;
-    }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
 }

@@ -1,14 +1,20 @@
 package com.example.UltiOauth.Entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-
+import java.util.List;
 
 
 @Entity
-@Table(name="user_entity")
+@Table(name="user_table")
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder(toBuilder = true)
 public class UserEntity {
 
     @Id
@@ -28,6 +34,9 @@ public class UserEntity {
     @Column(name = "source")
     @Enumerated(EnumType.STRING)
     private RegistrationSource source;
+
+    @OneToMany(mappedBy = "owner", cascade= CascadeType.ALL)
+    private List<RepoEntity> repoEntity;
 
 
 }
