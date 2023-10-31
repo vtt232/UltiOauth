@@ -55,7 +55,7 @@ public class SecurityConfig {
     public SecurityFilterChain oauthSecurityFilterChain(HttpSecurity http) throws Exception {
         http.cors(cors -> cors.configurationSource(corsConfigurationSource())).csrf().disable()
                 .authorizeRequests(authorizeRequests -> authorizeRequests
-                        .antMatchers("/access/**").permitAll() // Define public endpoints
+                        .antMatchers("/access/**", "/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**", "/webjars/**").permitAll() // Define public endpoints
                         .antMatchers("/oauth/**").authenticated()
                 )
                 .oauth2Login().successHandler(oAuth2LoginSuccessHandler); // Configure a custom success handler);
@@ -67,7 +67,7 @@ public class SecurityConfig {
     public SecurityFilterChain jwtSecurityFilterChain(HttpSecurity http) throws Exception {
         http.cors(cors -> cors.configurationSource(corsConfigurationSource())).csrf().disable()
                 .authorizeRequests(authorizeRequests -> authorizeRequests
-                        .antMatchers("/access/**").permitAll() // Define public endpoints
+                        .antMatchers("/access/**", "/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**", "/webjars/**").permitAll() // Define public endpoints
                         .antMatchers("/jwt/**").authenticated()
                 ).sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)

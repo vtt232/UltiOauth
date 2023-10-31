@@ -32,14 +32,23 @@ public class RepoServiceImp implements RepoService {
     }
 
     public RepoDTO createRepo(RepoDTO repoDTO, String username){
-        RepoEntity repoEntity = new RepoEntity();
-        repoEntity = RepoMapper.fromDtoToRepo(repoDTO, repoEntity);
-        Optional<UserEntity> userEntity = userRepository.findByUsername(username);
-        if(userEntity.isPresent()){
-            repoEntity.setOwner(userEntity.get());
-            repoEntity = repoRepository.save(repoEntity);
+
+        Optional<RepoEntity> existedRepoEntity = repoRepository.findReposByRepoName(repoDTO.getName());
+
+        if(existedRepoEntity.isPresent()){
+            return RepoMapper.fromRepoToDto(existedRepoEntity.get());
         }
-        return RepoMapper.fromRepoToDto(repoEntity);
+        else{
+            RepoEntity repoEntity = new RepoEntity();
+            repoEntity = RepoMapper.fromDtoToRepo(repoDTO, repoEntity);
+            Optional<UserEntity> userEntity = userRepository.findByUsername(username);
+            if(userEntity.isPresent()){
+                repoEntity.setOwner(userEntity.get());
+                repoEntity = repoRepository.save(repoEntity);
+            }
+            return RepoMapper.fromRepoToDto(repoEntity);
+        }
+
     }
 
     public  List<RepoDTO> getAllRepoByUsername(int pageNo, int pageSize, String sortBy, String username){

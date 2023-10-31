@@ -12,7 +12,7 @@ import java.util.List;
 @Entity
 @Builder(toBuilder = true)
 @Table(name = "repo_table")
-public class RepoEntity {
+public class RepoEntity extends Auditable  {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private long id;

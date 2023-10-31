@@ -78,7 +78,7 @@ public class OAuth2LoginSuccessHandler extends SavedRequestAwareAuthenticationSu
                         userEntity.setUsername(name);
                         userEntity.setSource(RegistrationSource.GITHUB);
                         userEntity.setPassword(password);
-                        userService.save(userEntity);
+                        userService.createUser(userEntity);
                         DefaultOAuth2User newUser = new DefaultOAuth2User(List.of(new SimpleGrantedAuthority(userEntity.getRole().name())),
                                 attributes, "id");
                         Authentication securityAuth = new OAuth2AuthenticationToken(newUser, List.of(new SimpleGrantedAuthority(userEntity.getRole().name())),

@@ -10,9 +10,10 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Entity
 @Data
+@EqualsAndHashCode(callSuper=false)
 @Table(name = "note_table")
 @Builder(toBuilder = true)
-public class NoteEntity {
+public class NoteEntity extends Auditable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -3,6 +3,8 @@ package com.example.UltiOauth.Service.Impl;
 import com.example.UltiOauth.DTO.NoteDTO;
 import com.example.UltiOauth.Entity.NoteEntity;
 import com.example.UltiOauth.Entity.RepoEntity;
+import com.example.UltiOauth.Exception.NoteNotFoundException;
+import com.example.UltiOauth.Exception.RepoNotFoundException;
 import com.example.UltiOauth.Mapper.NoteMapper;
 import com.example.UltiOauth.Repository.NoteRepository;
 import com.example.UltiOauth.Repository.RepoRepository;
@@ -47,29 +49,44 @@ public class NoteServiceImp implements NoteService {
     @Override
     public List<NoteDTO> addNote(NoteDTO newNote, String username, long repoId) {
         NoteEntity newNoteEntity = NoteMapper.fromDtoToEntity(newNote,new NoteEntity());
-        RepoEntity repoEntity = repoRepository.findReposByUsernameAndRepoId(username, repoId);
-        newNoteEntity.setRepo(repoEntity);
-        noteRepository.save(newNoteEntity);
-        return getAllNotesByRepoIdAndUsername(username, repoId);
+        Optional<RepoEntity> repoEntity = repoRepository.findReposByUsernameAndRepoId(username, repoId);
+        if(repoEntity.isPresent()){
+            newNoteEntity.setRepo(repoEntity.get());
+            noteRepository.save(newNoteEntity);
+            return getAllNotesByRepoIdAndUsername(username, repoId);
+        }
+        else {
+            throw new RepoNotFoundException(username, repoId);
+        }
+
     }
 
     @Override
     public List<NoteDTO> updateNote(NoteDTO newNote, String username, long repoId, long noteId) {
         NoteEntity updateNoteEntity = NoteMapper.fromDtoToEntity(newNote,new NoteEntity());
-        RepoEntity repoEntity = repoRepository.findReposByUsernameAndRepoId(username, repoId);
-        updateNoteEntity.setRepo(repoEntity);
-        updateNoteEntity.setId(noteId);
-        noteRepository.save(updateNoteEntity);
-        return getAllNotesByRepoIdAndUsername(username, repoId);
+        Optional<RepoEntity> repoEntity = repoRepository.findReposByUsernameAndRepoId(username, repoId);
+        if(repoEntity.isPresent()){
+            updateNoteEntity.setRepo(repoEntity.get());
+            updateNoteEntity.setId(noteId);
+            noteRepository.save(updateNoteEntity);
+            return getAllNotesByRepoIdAndUsername(username, repoId);
+        }
+        else{
+            throw new RepoNotFoundException(username, repoId);
+        }
     }
 
     @Override
     public List<NoteDTO> deleteNote(String username, long repoId, long noteId) {
         Optional<NoteEntity> deleteNoteEntity = noteRepository.findNotesByNoteIdAndRepoIdAndUsername(username, repoId, noteId);
-        System.out.println(deleteNoteEntity.get().toString());
+
         if(deleteNoteEntity.isPresent()){
             noteRepository.delete(deleteNoteEntity.get());
+            return getAllNotesByRepoIdAndUsername(username, repoId);
         }
-        return getAllNotesByRepoIdAndUsername(username, repoId);
+        else{
+            throw new NoteNotFoundException(username, repoId, noteId);
+        }
+
     }
 }

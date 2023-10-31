@@ -15,6 +15,7 @@ import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -35,16 +36,18 @@ public class UserDetailsServiceImp implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String name) throws UsernameNotFoundException {
 
-        UserEntity user = userRepository.findByUsername(name).get();
+        Optional<UserEntity> user = userRepository.findByUsername(name);
+        if(user.isPresent()){
+            List<UserRole> roles = new ArrayList<>();
+            roles.add(user.get().getRole());
+            Collection<SimpleGrantedAuthority> authorities= mapRolesToAuthorities(roles);
 
-        if (user == null) {
-            throw new UsernameNotFoundException("User not found");
+            return new UserPrincipal(user.get().getUsername(), user.get().getPassword(),true, authorities);
+
         }
-        List<UserRole> roles = new ArrayList<>();
-        roles.add(user.getRole());
-        Collection<SimpleGrantedAuthority> authorities= mapRolesToAuthorities(roles);
-
-        return new UserPrincipal(user.getUsername(), user.getPassword(),true, authorities);
+        else{
+            throw new UsernameNotFoundException("User " + name + " not found");
+        }
     }
 
 }
