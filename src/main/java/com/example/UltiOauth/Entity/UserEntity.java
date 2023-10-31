@@ -35,7 +35,7 @@ public class UserEntity {
     @Enumerated(EnumType.STRING)
     private RegistrationSource source;
 
-    @OneToMany(mappedBy = "owner", cascade= CascadeType.ALL)
+    @OneToMany(mappedBy = "owner", cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH })
     private List<RepoEntity> repoEntity;
 
 

@@ -10,6 +10,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RepoDTO {
+    private long id;
     private String name;
     private String url;
     private String language;

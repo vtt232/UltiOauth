@@ -21,7 +21,7 @@ public class NoteEntity {
     @Column
     private String content;
 
-    @ManyToOne(cascade= CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "repo_id")
     private RepoEntity repo;
 

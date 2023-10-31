@@ -13,4 +13,7 @@ public interface RepoRepository extends JpaRepository<RepoEntity, Integer> {
 
     @Query("SELECT r FROM RepoEntity r WHERE r.owner.username = :ownerName")
     public Page<RepoEntity> findReposByUsername(@Param("ownerName") String ownerName, Pageable pageable);
+
+    @Query("SELECT r FROM RepoEntity r WHERE r.owner.username = :ownerName AND r.id = :repoId")
+    public RepoEntity findReposByUsernameAndRepoId(@Param("ownerName") String ownerName, @Param("repoId") long repoId);
 }

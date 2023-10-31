@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,10 +51,10 @@ public class RepoController {
     }
 
     @GetMapping(path = "",produces = "application/json")
-    public ResponseEntity<List<RepoDTO>> getAllRepos( @RequestParam(name="page", defaultValue = "0") int pageNo,
-                                            @RequestParam(name="size", defaultValue = "4") int pageSize,
-                                            @RequestParam(name="sort",defaultValue = "repo_name") String sortBy,
-                                      @AuthenticationPrincipal OAuth2User oAuth2User)
+    public ResponseEntity<List<RepoDTO>> getAllRepos(@RequestParam(name="page", defaultValue = "0") int pageNo,
+                                                     @RequestParam(name="size", defaultValue = "4") int pageSize,
+                                                     @RequestParam(name="sort",defaultValue = "id") String sortBy,
+                                                     @AuthenticationPrincipal OAuth2User oAuth2User, Principal principal)
     {
         String username = oAuth2User.getAttribute("login");
         List<RepoDTO> repoDTOs = repoService.getAllRepoByUsername(pageNo, pageSize, sortBy, username);

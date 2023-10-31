@@ -20,29 +20,36 @@ public class NoteController {
         this.noteService = noteService;
     }
 
-    @GetMapping(path = "/{repoName}",produces = "application/json")
-    public List<NoteDTO> getAllNotes(@RequestParam(name="page", defaultValue = "0") int pageNo,
-                                     @RequestParam(name="size", defaultValue = "2") int pageSize,
-                                     @RequestParam(name="sort",defaultValue = "id") String sortBy,
-                                     @AuthenticationPrincipal OAuth2User oAuth2User,
-                                     @PathVariable String repoName)
+    @GetMapping(path = "",produces = "application/json")
+    public List<NoteDTO> getAllNotesByRepoId(@RequestParam(name="repoId", defaultValue = "0") long repoId,
+                                     @AuthenticationPrincipal OAuth2User oAuth2User)
     {
         String username = oAuth2User.getAttribute("login");
-        return noteService.getAllNotesByRepoNameAndUsername(pageNo, pageSize, sortBy, username, repoName);
+        return noteService.getAllNotesByRepoIdAndUsername(username, repoId);
     }
 
-    @PostMapping(path="/{repoName}",produces = "application/json", consumes = "application/json")
+    @PostMapping(path="/{repoId}",produces = "application/json", consumes = "application/json")
     public List<NoteDTO> addNote(@RequestBody NoteDTO newNote, @AuthenticationPrincipal OAuth2User oAuth2User,
-                                 @PathVariable String repoName) {
+                                 @PathVariable long repoId) {
         String username = oAuth2User.getAttribute("login");
-        List<NoteDTO> noteList = noteService.addNote(newNote, username, repoName);
-        if (noteList == null) {
-            return null;
-        }
-        else {
-            return noteList;
-        }
+        List<NoteDTO> noteList = noteService.addNote(newNote, username, repoId);
+        return noteList;
     }
 
+    @PutMapping(path="/{repoId}/{noteId}",produces = "application/json", consumes = "application/json")
+    public List<NoteDTO> updateNote(@RequestBody NoteDTO updateNote, @AuthenticationPrincipal OAuth2User oAuth2User,
+                                 @PathVariable long repoId, @PathVariable long noteId) {
+        String username = oAuth2User.getAttribute("login");
+        List<NoteDTO> noteList = noteService.updateNote(updateNote, username, repoId, noteId);
+        return noteList;
+    }
+
+    @DeleteMapping(path="/{repoId}/{noteId}",produces = "application/json")
+    public List<NoteDTO> deleteNote(@AuthenticationPrincipal OAuth2User oAuth2User,
+                                    @PathVariable long repoId, @PathVariable long noteId) {
+        String username = oAuth2User.getAttribute("login");
+        List<NoteDTO> noteList = noteService.deleteNote(username, repoId, noteId);
+        return noteList;
+    }
 
 }

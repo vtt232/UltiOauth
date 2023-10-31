@@ -10,6 +10,6 @@ public class RepoMapper {
     }
 
     public static  RepoDTO fromRepoToDto(RepoEntity repoEntity){
-        return new RepoDTO(repoEntity.getRepo_name(), repoEntity.getRepo_url(), repoEntity.getLanguage());
+        return new RepoDTO(repoEntity.getId(),repoEntity.getRepo_name(), repoEntity.getRepo_url(), repoEntity.getLanguage());
     }
 }

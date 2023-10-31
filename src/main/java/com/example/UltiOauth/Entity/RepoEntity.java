@@ -20,11 +20,11 @@ public class RepoEntity {
     private String repo_url;
     private String language;
 
-    @ManyToOne(cascade= CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "owner_id")
     private UserEntity owner;
 
-    @OneToMany(mappedBy = "repo", cascade= CascadeType.ALL)
+    @OneToMany(mappedBy = "repo", cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH })
     private List<NoteEntity> noteEntity;
 
 

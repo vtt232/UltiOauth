@@ -8,8 +8,14 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
+import java.util.Optional;
+
 public interface NoteRepository extends JpaRepository<NoteEntity, Long> {
 
-    @Query("SELECT n FROM NoteEntity n WHERE n.repo.repo_name = :repoName AND n.repo.owner.username = :ownerName")
-    public Page<NoteEntity> findNotesByRepoNameAndUsername(@Param("ownerName") String ownerName, @Param("repoName") String repoName, Pageable pageable);
+    @Query("SELECT n FROM NoteEntity n WHERE n.repo.id = :repoId AND n.repo.owner.username = :ownerName")
+    public Optional<List<NoteEntity>> findNotesByRepoIdAndUsername(@Param("ownerName") String ownerName, @Param("repoId") long repoId);
+
+    @Query("SELECT n FROM NoteEntity n WHERE n.repo.owner.username = :ownerName AND n.repo.id = :repoId AND n.id = :noteId")
+    public Optional<NoteEntity> findNotesByNoteIdAndRepoIdAndUsername(@Param("ownerName") String ownerName, @Param("repoId") long repoId, @Param("noteId") long noteId);
 }
