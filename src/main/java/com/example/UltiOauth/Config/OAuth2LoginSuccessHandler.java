@@ -6,6 +6,7 @@ import com.example.UltiOauth.Entity.UserRole;
 import com.example.UltiOauth.JWT.JwtProvider;
 import com.example.UltiOauth.Service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
@@ -28,6 +29,7 @@ import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class OAuth2LoginSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
 
     private final UserService userService;
@@ -37,27 +39,24 @@ public class OAuth2LoginSuccessHandler extends SavedRequestAwareAuthenticationSu
     private JwtProvider jwtProvider;
 
     public String authenticateStudent(String name, String link, UserRole role, String password){
-
+        log.info("STARTING CREATING JWT TOKEN");
         // Authenticate the user using the authentication manager
         Authentication authenticated = SecurityContextHolder.getContext().getAuthentication();
 
         // Generate the JWT token
         String jwtToken = jwtProvider.generateToken(authenticated);
-
+        log.info("CREATED JWT TOKEN SUCCESSFULLY");
         return jwtToken;
     }
-
-
-
-
-
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws ServletException, IOException {
 
+        log.info("AUTHENTICATION BY GITHUB SUCCESSFULLY");
         OAuth2AuthenticationToken oAuth2AuthenticationToken = (OAuth2AuthenticationToken) authentication;
 
         if ("github".equals(oAuth2AuthenticationToken.getAuthorizedClientRegistrationId())) {
+
             DefaultOAuth2User principal = (DefaultOAuth2User) authentication.getPrincipal();
             Map<String, Object> attributes = principal.getAttributes();
 
@@ -66,12 +65,14 @@ public class OAuth2LoginSuccessHandler extends SavedRequestAwareAuthenticationSu
             String password = attributes.getOrDefault("id", "1234567").toString();
             userService.findByLink(link)
                     .ifPresentOrElse(user -> {
+                        log.info("USER EXISTED IN DATABASE");
                         DefaultOAuth2User newUser = new DefaultOAuth2User(List.of(new SimpleGrantedAuthority(user.getRole().name())),
                                 attributes, "id");
                         Authentication securityAuth = new OAuth2AuthenticationToken(newUser, List.of(new SimpleGrantedAuthority(user.getRole().name())),
                                 oAuth2AuthenticationToken.getAuthorizedClientRegistrationId());
                         SecurityContextHolder.getContext().setAuthentication(securityAuth);
                     }, () -> {
+                        log.info("USER IS NOT EXISTED IN DATABASE");
                         UserEntity userEntity = new UserEntity();
                         userEntity.setRole(UserRole.ROLE_USER);
                         userEntity.setLink(link);
@@ -86,9 +87,11 @@ public class OAuth2LoginSuccessHandler extends SavedRequestAwareAuthenticationSu
                         SecurityContextHolder.getContext().setAuthentication(securityAuth);
                     });
 
+
             String tolken = authenticateStudent(name, link, UserRole.ROLE_USER, password);
 
             if (tolken != null) {
+                log.info("SETTING COOKIE");
                 ResponseCookie springCookie = ResponseCookie.from("jwtToken", tolken)
                         .httpOnly(true)
                         .secure(false)
@@ -98,7 +101,7 @@ public class OAuth2LoginSuccessHandler extends SavedRequestAwareAuthenticationSu
                 // Add the JWT token cookie to the response
                 response.addHeader(HttpHeaders.SET_COOKIE, springCookie.toString());
             }
-
+            log.info("SETTING REDIRECTING URL");
             this.setAlwaysUseDefaultTargetUrl(true);
             this.setDefaultTargetUrl("http://localhost:3000");
             super.onAuthenticationSuccess(request, response, authentication);

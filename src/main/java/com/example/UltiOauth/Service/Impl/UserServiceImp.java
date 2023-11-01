@@ -1,20 +1,19 @@
 package com.example.UltiOauth.Service.Impl;
 
 import com.example.UltiOauth.DTO.UserDTO;
-import com.example.UltiOauth.Entity.RepoEntity;
 import com.example.UltiOauth.Entity.UserEntity;
 import com.example.UltiOauth.Exception.UserExistedException;
 import com.example.UltiOauth.Exception.UserNotFoundException;
-import com.example.UltiOauth.Mapper.RepoMapper;
 import com.example.UltiOauth.Mapper.UserMapper;
 import com.example.UltiOauth.Repository.UserRepository;
 import com.example.UltiOauth.Service.UserService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
 @Service
+@Slf4j
 public class UserServiceImp implements UserService {
 
     private final UserRepository userRepository;
@@ -31,9 +30,10 @@ public class UserServiceImp implements UserService {
 
     @Override
     public UserDTO findByUsername(String username) {
-
+        log.info("STARTING FINDING USER BY USERNAME");
         Optional<UserEntity> userEntity = userRepository.findByUsername(username);
         if(userEntity.isPresent()){
+            log.info("FOUND USER");
             UserDTO userDTO = UserMapper.fromEntityDto(userEntity.get());
             return userDTO;
         }else{
@@ -42,14 +42,17 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
-    public void createUser(UserEntity user) {
+    public UserDTO createUser(UserEntity user) {
+        log.info("STARTING FINDING USER BY USERNAME TO CREATING USER");
         Optional<UserEntity> existedUserEntity = userRepository.findByUsername(user.getUsername());
 
         if(existedUserEntity.isPresent()){
+            log.warn("FOUND USER");
             throw new UserExistedException(user.getUsername());
         }
         else{
-            userRepository.save(user);
+            log.info("CREATING NEW USER");
+            return UserMapper.fromEntityDto(userRepository.save(user));
         }
     }
 }

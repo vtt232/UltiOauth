@@ -3,6 +3,7 @@ package com.example.UltiOauth.Controller;
 import com.example.UltiOauth.DTO.RepoDTO;
 import com.example.UltiOauth.Entity.RepoEntity;
 import com.example.UltiOauth.Service.RepoService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +28,7 @@ import static org.springframework.security.oauth2.client.web.reactive.function.c
 
 @RestController
 @RequestMapping("jwt/repo")
+@Slf4j
 public class RepoController {
 
     private final WebClient webClient;
@@ -44,16 +46,20 @@ public class RepoController {
     public ResponseEntity<List<RepoDTO>> pullUserRepoInfor(@RegisteredOAuth2AuthorizedClient OAuth2AuthorizedClient client, @AuthenticationPrincipal OAuth2User oAuth2User){
 
         if(oAuth2User == null){
+            log.warn("USER IS NOT AUTHENTICATED");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
+        log.info("GET GITHUB REPOSITORIES DATA");
         List<RepoDTO>  response = webClient.get().uri("https://api.github.com/users/{username}/repos", oAuth2User.getAttributes().get("login")) .attributes(oauth2AuthorizedClient(client))
                 .retrieve()
                 .bodyToMono(new ParameterizedTypeReference<List<RepoDTO>>() {}).block();
         List<RepoDTO> repoDTOs = new ArrayList<>();
         String username = oAuth2User.getAttribute("login");
+        log.info("SAVE GITHUB REPOSITORIES DATA TO DATABASE");
         for(RepoDTO repoDTO : response){
             repoDTOs.add(repoService.createRepo(repoDTO, username));
         }
+        log.info("PULL DATA SUCCESS");
         return ResponseEntity.ok().body(repoDTOs);
     }
 
@@ -64,16 +70,14 @@ public class RepoController {
                                                      @RequestParam(name="sort",defaultValue = "id") String sortBy)
     {
         if(oAuth2User == null){
+            log.warn("USER IS NOT AUTHENTICATED");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
         String username = oAuth2User.getAttribute("login");
+        log.info("GET REPOSITORIES DATA FROM DATABASE");
         List<RepoDTO> repoDTOs = repoService.getAllRepoByUsername(pageNo, pageSize, sortBy, username);
+        log.info("GET REPOSITORIES DATA SUCCESSFULLY");
         return ResponseEntity.ok().body(repoDTOs);
     }
-
-
-
-
-
 
 }

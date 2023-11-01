@@ -10,5 +10,5 @@ public interface UserService {
     Optional<UserEntity> findByLink(String link);
     UserDTO findByUsername(String username);
 
-    void createUser(UserEntity user);
+    UserDTO createUser(UserEntity user);
 }

@@ -5,6 +5,7 @@ import com.example.UltiOauth.Entity.UserPrincipal;
 import com.example.UltiOauth.Entity.UserRole;
 
 import com.example.UltiOauth.Repository.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -20,6 +21,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional
+@Slf4j
 public class UserDetailsServiceImp implements UserDetailsService {
 
     private UserRepository userRepository;
@@ -35,9 +37,10 @@ public class UserDetailsServiceImp implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String name) throws UsernameNotFoundException {
-
+        log.info("STARTING LOADING USER FROM USERNAME");
         Optional<UserEntity> user = userRepository.findByUsername(name);
         if(user.isPresent()){
+            log.info("FOUND USER");
             List<UserRole> roles = new ArrayList<>();
             roles.add(user.get().getRole());
             Collection<SimpleGrantedAuthority> authorities= mapRolesToAuthorities(roles);

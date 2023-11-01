@@ -1,0 +1,42 @@
+version: "3"
+
+networks:
+  app_db:
+    driver: bridge
+
+services:
+  mysqldb:
+    container_name: mysql-container
+    image: mysql
+    ports:
+      - "3309:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=2322000@Vtt
+    networks:
+      - app_db
+    volumes:
+      - ./initDB/init.sql:/docker-entrypoint-initdb.d/setup.sql
+    healthcheck:
+      test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
+      timeout: 20s
+      retries: 50
+
+
+
+
+  web:
+    container_name: app-container
+    build: .
+    ports:
+      - "9090:8080"
+    depends_on:
+      mysqldb:
+        condition: service_healthy
+    networks:
+      - app_db
+    links:
+      - mysqldb
+
+
+
+

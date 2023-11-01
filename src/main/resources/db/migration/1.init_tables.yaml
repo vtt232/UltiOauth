@@ -1,0 +1,113 @@
+databaseChangeLog:
+  - changeSet:
+      author: vtthinh
+      id: 1655881620
+      changes:
+        - createSequence:
+            schemaName: newdb
+            sequenceName: github_user_sequence
+            startValue: 1
+            incrementBy: 1
+            minValue: 1
+        - createTable:
+            schemaName: newdb
+            tableName: user_table
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: created_by
+                  type: varchar(255)
+              - column:
+                  name: created_date
+                  type: datetime(6)
+              - column:
+                  name: last_modified_by
+                  type: varchar(6)
+              - column:
+                  name: last_modified_date
+                  type: datetime(6)
+              - column:
+                  name: link
+                  type: varchar(255)
+              - column:
+                  name: password
+                  type: varchar(255)
+              - column:
+                  name: role
+                  type: varchar(255)
+              - column:
+                  name: source
+                  type: varchar(255)
+              - column:
+                  name: username
+                  type: varchar(255)
+
+        - createTable:
+            schemaName: newdb
+            tableName: repo_table
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: created_by
+                  type: varchar(255)
+              - column:
+                  name: created_date
+                  type: datetime(6)
+              - column:
+                  name: last_modified_by
+                  type: varchar(6)
+              - column:
+                  name: last_modified_date
+                  type: datetime(6)
+              - column:
+                  name: language
+                  type: varchar(255)
+              - column:
+                  name: repo_name
+                  type: varchar(255)
+              - column:
+                  name: repo_url
+                  type: varchar(255)
+              - column:
+                  name: owner_id
+                  type: bigint
+                  constraints:
+                    foreignKey: true
+
+        - createTable:
+            schemaName: newdb
+            tableName: note_table
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: created_by
+                  type: varchar(255)
+              - column:
+                  name: created_date
+                  type: datetime(6)
+              - column:
+                  name: last_modified_by
+                  type: varchar(6)
+              - column:
+                  name: last_modified_date
+                  type: datetime(6)
+              - column:
+                  name: content
+                  type: varchar(255)
+              - column:
+                  name: repo_id
+                  type: bigint
+                  constraints:
+                    foreignKey: true
