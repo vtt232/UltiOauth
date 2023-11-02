@@ -4,6 +4,7 @@ import com.example.UltiOauth.Entity.UserRole;
 import com.example.UltiOauth.JWT.JwtAuthenticationFilter;
 import com.example.UltiOauth.JWT.JwtProvider;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -30,6 +31,9 @@ import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 public class SecurityConfig {
+
+    @Value("${app.frontEndUrl}")
+    private String frontEndUrl;
 
     @Autowired
     private OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
@@ -81,7 +85,7 @@ public class SecurityConfig {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:3000"));
+        configuration.setAllowedOrigins(List.of(frontEndUrl));
         configuration.addAllowedHeader("*");
         configuration.addAllowedMethod("*");
         configuration.setAllowCredentials(true);

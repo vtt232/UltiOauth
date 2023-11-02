@@ -24,8 +24,8 @@ services:
 
 
 
-  web:
-    container_name: app-container
+  spring-boot-app:
+    container_name: spring-boot-container
     build: .
     ports:
       - "9090:8080"
@@ -34,8 +34,24 @@ services:
         condition: service_healthy
     networks:
       - app_db
-    links:
-      - mysqldb
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/access/status"]
+      timeout: 20s
+      retries: 50
+
+
+  react-app:
+    container_name: react-container
+    image: thinh23/react-frontend:final
+    ports:
+      - "3000:3000"
+    networks:
+      - app_db
+    depends_on:
+      spring-boot-app:
+        condition: service_healthy
+
+
 
 
 

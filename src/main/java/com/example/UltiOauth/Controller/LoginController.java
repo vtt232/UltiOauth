@@ -2,6 +2,7 @@ package com.example.UltiOauth.Controller;
 
 import com.example.UltiOauth.DTO.RepoDTO;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -14,6 +15,9 @@ import java.util.List;
 @Controller
 @Slf4j
 public class LoginController {
+
+    @Value("${app.loginPageUrl}")
+    private String loginPageUrl;
 
     @GetMapping("/access/status")
     @ResponseBody
@@ -30,7 +34,7 @@ public class LoginController {
     @GetMapping("/access/redirect")
     public ResponseEntity<String> getRedirectLink() {
         log.info("USER REQUIRE LOGIN PAGE LINK");
-        return ResponseEntity.ok("http://localhost:8080/access/login");
+        return ResponseEntity.ok(loginPageUrl);
     }
 
     @GetMapping("/access/login")

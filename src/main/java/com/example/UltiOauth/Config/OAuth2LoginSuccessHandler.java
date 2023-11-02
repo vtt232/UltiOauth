@@ -8,6 +8,7 @@ import com.example.UltiOauth.Service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -33,6 +34,9 @@ import java.util.Map;
 public class OAuth2LoginSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
 
     private final UserService userService;
+
+    @Value("${app.frontEndUrl}")
+    private String frontEndUrl;
 
 
     @Autowired
@@ -103,7 +107,7 @@ public class OAuth2LoginSuccessHandler extends SavedRequestAwareAuthenticationSu
             }
             log.info("SETTING REDIRECTING URL");
             this.setAlwaysUseDefaultTargetUrl(true);
-            this.setDefaultTargetUrl("http://localhost:3000");
+            this.setDefaultTargetUrl(frontEndUrl);
             super.onAuthenticationSuccess(request, response, authentication);
         }
     }

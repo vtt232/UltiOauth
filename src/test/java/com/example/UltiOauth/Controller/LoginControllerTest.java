@@ -7,6 +7,7 @@ import com.example.UltiOauth.Service.UserService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.ConfigDataApplicationContextInitializer;
@@ -34,6 +35,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         initializers = ConfigDataApplicationContextInitializer.class)
 @AutoConfigureMockMvc
 public class LoginControllerTest {
+
+    @Value("${app.loginPageUrl}")
+    private String loginPageUrl;
 
     @Autowired
     private MockMvc mockMvc;
@@ -91,7 +95,7 @@ public class LoginControllerTest {
         assertEquals(200, status, "Expected a status code of 200");
 
 
-        assertEquals("http://localhost:8080/access/login", content, "Expected redirect link");
+        assertEquals(loginPageUrl, content, "Expected redirect link");
 
     }
 

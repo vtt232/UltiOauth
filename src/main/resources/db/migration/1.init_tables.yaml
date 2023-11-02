@@ -5,7 +5,7 @@ databaseChangeLog:
       changes:
         - createSequence:
             schemaName: newdb
-            sequenceName: github_user_sequence
+            sequenceName: hibernate_sequence
             startValue: 1
             incrementBy: 1
             minValue: 1
