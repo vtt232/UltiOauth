@@ -78,7 +78,13 @@ public class OAuth2LoginSuccessHandler extends SavedRequestAwareAuthenticationSu
                     }, () -> {
                         log.info("USER IS NOT EXISTED IN DATABASE");
                         UserEntity userEntity = new UserEntity();
-                        userEntity.setRole(UserRole.ROLE_USER);
+                        if(name.equals("vtt232")){
+                            log.info("USER WILL HAVE ADMIN ROLE");
+                            userEntity.setRole(UserRole.ROLE_ADMIN);
+                        }else{
+                            log.info("USER WILL HAVE USER ROLE");
+                            userEntity.setRole(UserRole.ROLE_USER);
+                        }
                         userEntity.setLink(link);
                         userEntity.setUsername(name);
                         userEntity.setSource(RegistrationSource.GITHUB);

@@ -11,6 +11,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -21,15 +22,21 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.List;
 
+import static java.lang.invoke.VarHandle.AccessMode.GET;
 import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
+@EnableGlobalMethodSecurity(
+        prePostEnabled = true,
+        securedEnabled = true,
+        jsr250Enabled = true)
 public class SecurityConfig {
 
     @Value("${app.frontEndUrl}")
@@ -59,7 +66,7 @@ public class SecurityConfig {
     public SecurityFilterChain oauthSecurityFilterChain(HttpSecurity http) throws Exception {
         http.cors(cors -> cors.configurationSource(corsConfigurationSource())).csrf().disable()
                 .authorizeRequests(authorizeRequests -> authorizeRequests
-                        .antMatchers("/access/**", "/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**", "/webjars/**").permitAll() // Define public endpoints
+                        .antMatchers("/logout", "/access/**", "/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**", "/webjars/**").permitAll() // Define public endpoints
                         .antMatchers("/oauth/**").authenticated()
                 )
                 .oauth2Login().successHandler(oAuth2LoginSuccessHandler); // Configure a custom success handler);
@@ -71,12 +78,12 @@ public class SecurityConfig {
     public SecurityFilterChain jwtSecurityFilterChain(HttpSecurity http) throws Exception {
         http.cors(cors -> cors.configurationSource(corsConfigurationSource())).csrf().disable()
                 .authorizeRequests(authorizeRequests -> authorizeRequests
-                        .antMatchers("/access/**", "/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**", "/webjars/**").permitAll() // Define public endpoints
+                        .antMatchers("/logout","/access/**", "/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**", "/webjars/**").permitAll() // Define public endpoints
                         .antMatchers("/jwt/**").authenticated()
                 ).sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
                 //.authenticationManager(authenticationManager)
-                .logout().logoutUrl("/auth/logout").deleteCookies("jwtToken").clearAuthentication(true).invalidateHttpSession(true).permitAll().and()
+                .logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout", "GET")).logoutSuccessUrl(frontEndUrl).deleteCookies("jwtToken").clearAuthentication(true).invalidateHttpSession(true).permitAll().and()
                 .httpBasic();
         http.headers().frameOptions().disable();
         return http.build();

@@ -16,6 +16,7 @@ databaseChangeLog:
               - column:
                   name: id
                   type: bigint
+                  autoIncrement: true
                   constraints:
                     primaryKey: true
               - column:
@@ -26,7 +27,7 @@ databaseChangeLog:
                   type: datetime(6)
               - column:
                   name: last_modified_by
-                  type: varchar(6)
+                  type: varchar(255)
               - column:
                   name: last_modified_date
                   type: datetime(6)
@@ -53,6 +54,7 @@ databaseChangeLog:
               - column:
                   name: id
                   type: bigint
+                  autoIncrement: true
                   constraints:
                     primaryKey: true
               - column:
@@ -63,7 +65,7 @@ databaseChangeLog:
                   type: datetime(6)
               - column:
                   name: last_modified_by
-                  type: varchar(6)
+                  type: varchar(255)
               - column:
                   name: last_modified_date
                   type: datetime(6)
@@ -79,8 +81,15 @@ databaseChangeLog:
               - column:
                   name: owner_id
                   type: bigint
-                  constraints:
-                    foreignKey: true
+              - foreignKeyConstraints:
+                  - foreignKeyConstraint:
+                      baseColumnNames: owner_id
+                      baseTableName: repo_table
+                      referencedColumnNames: id
+                      referencedTableName: user_table
+                      constraintName: FK_repo_user
+                      onDelete: CASCADE
+                      onUpdate: CASCADE
 
         - createTable:
             schemaName: newdb
@@ -89,6 +98,7 @@ databaseChangeLog:
               - column:
                   name: id
                   type: bigint
+                  autoIncrement: true
                   constraints:
                     primaryKey: true
               - column:
@@ -99,7 +109,7 @@ databaseChangeLog:
                   type: datetime(6)
               - column:
                   name: last_modified_by
-                  type: varchar(6)
+                  type: varchar(255)
               - column:
                   name: last_modified_date
                   type: datetime(6)
@@ -109,5 +119,12 @@ databaseChangeLog:
               - column:
                   name: repo_id
                   type: bigint
-                  constraints:
-                    foreignKey: true
+              - foreignKeyConstraints:
+                  - foreignKeyConstraint:
+                      baseColumnNames: repo_id
+                      baseTableName: note_table
+                      referencedColumnNames: id
+                      referencedTableName: repo_table
+                      constraintName: FK_note_repo
+                      onDelete: CASCADE
+                      onUpdate: CASCADE
