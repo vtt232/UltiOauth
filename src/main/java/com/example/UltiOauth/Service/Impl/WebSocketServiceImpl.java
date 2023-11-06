@@ -17,13 +17,13 @@ public class WebSocketServiceImpl implements WebSocketService {
         this.messagingTemplate = messagingTemplate;
     }
 
-    public void transfer(WebSocketAnnouncementDTO webSocketAnnouncementDTO) {
+    public void sendMessage(WebSocketAnnouncementDTO webSocketAnnouncementDTO) {
         log.info(webSocketAnnouncementDTO.getReceiver());
         messagingTemplate.convertAndSend(
                 "/queue/notify",
                 webSocketAnnouncementDTO
         );
-        log.info("TRANSFERED MESSAGE");
+        log.info("SEND MESSAGE SUCCESSFULLY");
     }
 
 }

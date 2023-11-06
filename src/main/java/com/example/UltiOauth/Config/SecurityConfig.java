@@ -82,7 +82,6 @@ public class SecurityConfig {
                         .antMatchers("/jwt/**").authenticated()
                 ).sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
-                //.authenticationManager(authenticationManager)
                 .logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout", "GET")).logoutSuccessUrl(frontEndUrl).deleteCookies("jwtToken").clearAuthentication(true).invalidateHttpSession(true).permitAll().and()
                 .httpBasic();
         http.headers().frameOptions().disable();

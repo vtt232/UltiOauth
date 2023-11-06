@@ -44,10 +44,11 @@ public class AdminController {
     }
 
     @MessageMapping("/announce")
-    public String announceNewAdmin(@Payload String newAdmin) {
+    public ResponseEntity<String> announceNewAdmin(@Payload String newAdmin) {
+        log.info(newAdmin+"IS SET TO ADMIN");
         WebSocketAnnouncementDTO webSocketAnnouncementDTO = new WebSocketAnnouncementDTO(ServerEvent.EVENT_SET_ADMIN, newAdmin);
-        webSocketService.transfer(webSocketAnnouncementDTO);
-        return "transfer success";
+        webSocketService.sendMessage(webSocketAnnouncementDTO);
+        return ResponseEntity.ok("SEND MESSAGE SUCCESSFULLY");
     }
 
 
