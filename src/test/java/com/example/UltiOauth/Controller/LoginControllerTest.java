@@ -56,7 +56,7 @@ public class LoginControllerTest {
     @DisplayName("CHECK AUTHENTICATION STATUS OF CLIENT. CLIENT IS AUTHENTICATED IN THIS TEST")
     void checkAuthenticationStatus_shouldReturnTrue() throws Exception{
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/access/status").with(oauth2Login()))
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/api/access/status").with(oauth2Login()))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
 
@@ -72,7 +72,7 @@ public class LoginControllerTest {
     @DisplayName("CHECK AUTHENTICATION STATUS OF CLIENT. CLIENT IS NOT AUTHENTICATED IN THIS TEST")
     void checkAuthenticationStatus_shouldReturnFalse() throws Exception{
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/access/status"))
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/api/access/status"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
 
@@ -87,7 +87,7 @@ public class LoginControllerTest {
     @Test
     @DisplayName("USER REQUIRE REDIRECT LINK TO LOGIN BY GITHUB PAGE. SHOULD RETURN THE CORRECT LINK TO USER")
     void giveRedirectLoginLink_shouldReturnTheLink() throws Exception{
-        MvcResult result =mockMvc.perform(get("/access/redirect")).andReturn();
+        MvcResult result =mockMvc.perform(get("/api/access/redirect")).andReturn();
         String content = result.getResponse().getContentAsString();
         int status = result.getResponse().getStatus();
 
@@ -102,7 +102,7 @@ public class LoginControllerTest {
     @Test
     @DisplayName("USER REDIRECT TO LOGIN BY GITHUB PAGE. SHOULD RETURN THE CORRECT VIEW TO USER")
     void testGetLoginPage() throws Exception {
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/access/login"))
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/api/access/login"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
 

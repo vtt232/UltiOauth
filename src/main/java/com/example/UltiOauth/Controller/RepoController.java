@@ -1,5 +1,6 @@
 package com.example.UltiOauth.Controller;
 
+import com.example.UltiOauth.Annotation.RoutingWith;
 import com.example.UltiOauth.DTO.RepoDTO;
 import com.example.UltiOauth.Entity.RepoEntity;
 import com.example.UltiOauth.Service.RepoService;
@@ -27,7 +28,7 @@ import java.util.List;
 import static org.springframework.security.oauth2.client.web.reactive.function.client.ServerOAuth2AuthorizedClientExchangeFilterFunction.oauth2AuthorizedClient;
 
 @RestController
-@RequestMapping("jwt/repo")
+@RequestMapping("api/jwt/repo")
 @Slf4j
 public class RepoController {
 
@@ -43,6 +44,7 @@ public class RepoController {
     }
 
     @GetMapping(path ="/pull", produces = "application/json")
+    @RoutingWith("${app.masterdb}")
     public ResponseEntity<List<RepoDTO>> pullUserRepoInfor(@RegisteredOAuth2AuthorizedClient OAuth2AuthorizedClient client, @AuthenticationPrincipal OAuth2User oAuth2User){
 
         if(oAuth2User == null){
@@ -64,6 +66,7 @@ public class RepoController {
     }
 
     @GetMapping(path = "",produces = "application/json")
+    @RoutingWith("${app.slavedb}")
     public ResponseEntity<List<RepoDTO>> getAllRepos(@AuthenticationPrincipal OAuth2User oAuth2User,
                                                      @RequestParam(name="page", defaultValue = "0") int pageNo,
                                                      @RequestParam(name="size", defaultValue = "4") int pageSize,

@@ -87,7 +87,7 @@ public class NoteControllerTest {
 
         when(noteService.getAllNotesByRepoIdAndUsername("vtt232", 1)).thenReturn(expectedNoteDTOs);
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/jwt/note").param("repoId","1").with(oauth2Login()
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/api/jwt/note").param("repoId","1").with(oauth2Login()
                         .attributes(attrs -> attrs.put("login", "vtt232"))))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
@@ -114,7 +114,7 @@ public class NoteControllerTest {
 
         when(noteService.getAllNotesByRepoIdAndUsername("vtt232", 1)).thenReturn(expectedNoteDTOs);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/jwt/note").param("repoId","1"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/jwt/note").param("repoId","1"))
                 .andExpect(MockMvcResultMatchers.status().isUnauthorized());
     }
 
@@ -136,7 +136,7 @@ public class NoteControllerTest {
 
         NoteDTO newNote = NoteDTO.builder().content("new content").build();
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/jwt/note/1").contentType("application/json")
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/api/jwt/note/1").contentType("application/json")
                         .content(mapper.writeValueAsString(newNote)).with(oauth2Login()
                         .attributes(attrs -> attrs.put("login", "vtt232"))))
                 .andExpect(MockMvcResultMatchers.status().isCreated())
@@ -166,7 +166,7 @@ public class NoteControllerTest {
 
         NoteDTO newNote = NoteDTO.builder().content("new content").build();
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/jwt/note/1").contentType("application/json")
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/jwt/note/1").contentType("application/json")
                         .content(mapper.writeValueAsString(newNote)).with(oauth2Login()
                                 .attributes(attrs -> attrs.put("login", "vtt232"))))
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
@@ -188,7 +188,7 @@ public class NoteControllerTest {
 
         NoteDTO newNote = NoteDTO.builder().content("update content").build();
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.put("/jwt/note/1/3").contentType("application/json")
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.put("/api/jwt/note/1/3").contentType("application/json")
                         .content(mapper.writeValueAsString(newNote)).with(oauth2Login()
                                 .attributes(attrs -> attrs.put("login", "vtt232"))))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -216,7 +216,7 @@ public class NoteControllerTest {
         when(noteService.deleteNote("vtt232",1L,3L)).thenReturn(expectedNoteDTOs);
 
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.delete("/jwt/note/1/3").with(oauth2Login()
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.delete("/api/jwt/note/1/3").with(oauth2Login()
                                 .attributes(attrs -> attrs.put("login", "vtt232"))))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
@@ -243,7 +243,7 @@ public class NoteControllerTest {
         when(noteService.deleteNote(eq("vtt232"),eq(1L),any(Long.class))).thenThrow(new NoteNotFoundException("Note is not found"));
 
 
-        mockMvc.perform(MockMvcRequestBuilders.delete("/jwt/note/1/9").with(oauth2Login()
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/jwt/note/1/9").with(oauth2Login()
                         .attributes(attrs -> attrs.put("login", "vtt232"))))
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
     }

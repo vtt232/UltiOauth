@@ -3,7 +3,6 @@ package com.example.UltiOauth.Controller;
 
 import com.example.UltiOauth.Config.OAuth2LoginSuccessHandler;
 import com.example.UltiOauth.Config.SecurityConfig;
-import com.example.UltiOauth.Config.WebSocketConfig;
 import com.example.UltiOauth.DTO.AdminRequestDTO;
 import com.example.UltiOauth.DTO.NoteDTO;
 import com.example.UltiOauth.JWT.JwtProvider;
@@ -43,7 +42,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(AdminController.class)
 @ContextConfiguration(classes = { AdminController.class,
-        SecurityConfig.class, OAuth2LoginSuccessHandler.class, WebSocketConfig.class},
+        SecurityConfig.class, OAuth2LoginSuccessHandler.class},
         initializers = ConfigDataApplicationContextInitializer.class)
 @AutoConfigureMockMvc
 public class AdminControllerTest {
@@ -70,8 +69,6 @@ public class AdminControllerTest {
     @MockBean
     WebClient webClient;
 
-    @MockBean
-    WebSocketService webSocketService;
 
 
     private static final ObjectMapper mapper = new ObjectMapper();
@@ -85,7 +82,7 @@ public class AdminControllerTest {
 
         given(adminService.setAdminRole(username)).willReturn(true);
 
-        mockMvc.perform(post("/jwt/admin/create-admin")
+        mockMvc.perform(post("/api/jwt/admin/create-admin")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"usernameOfAdmin\": \"abcxyz\"}").with(oauth2Login()
                                 .attributes(attrs -> attrs.put("login", "vtt232")).authorities(new SimpleGrantedAuthority("ROLE_ADMIN"))))
@@ -99,7 +96,7 @@ public class AdminControllerTest {
 
         given(adminService.setAdminRole(username)).willReturn(false);
 
-        mockMvc.perform(post("/jwt/admin/create-admin")
+        mockMvc.perform(post("/api/jwt/admin/create-admin")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"usernameOfAdmin\": \"abcxyz\"}").with(oauth2Login()
                                 .attributes(attrs -> attrs.put("login", "vtt232")).authorities(new SimpleGrantedAuthority("ROLE_ADMIN"))))
@@ -114,7 +111,7 @@ public class AdminControllerTest {
 
         given(adminService.setAdminRole(username)).willReturn(false);
 
-        mockMvc.perform(post("/jwt/admin/create-admin")
+        mockMvc.perform(post("/api/jwt/admin/create-admin")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"usernameOfAdmin\": \"abcxyz\"}"))
                 .andExpect(status().is3xxRedirection());
@@ -126,7 +123,7 @@ public class AdminControllerTest {
 
         given(adminService.setAdminRole(username)).willReturn(false);
 
-        mockMvc.perform(post("/jwt/admin/create-admin")
+        mockMvc.perform(post("/api/jwt/admin/create-admin")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"usernameOfAdmin\": \"abcxyz\"}").with(oauth2Login()
                                 .attributes(attrs -> attrs.put("login", "vtt232"))))

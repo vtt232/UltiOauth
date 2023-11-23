@@ -1,10 +1,9 @@
 package com.example.UltiOauth.Controller;
 
+import com.example.UltiOauth.Annotation.RoutingWith;
 import com.example.UltiOauth.DTO.AdminRequestDTO;
-import com.example.UltiOauth.DTO.WebSocketAnnouncementDTO;
 import com.example.UltiOauth.Entity.ServerEvent;
 import com.example.UltiOauth.Service.AdminService;
-import com.example.UltiOauth.Service.WebSocketService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -16,20 +15,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("jwt/admin/")
+@RequestMapping("api/jwt/admin")
 @Slf4j
 public class AdminController {
 
     private final AdminService adminService;
-    private final WebSocketService webSocketService;
 
-    public AdminController(AdminService adminService, WebSocketService webSocketService) {
+    public AdminController(AdminService adminService) {
         this.adminService = adminService;
-        this.webSocketService = webSocketService;
     }
 
     @PostMapping("/create-admin")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @RoutingWith("${app.masterdb}")
     public ResponseEntity<Boolean> setAdminRole(@RequestBody AdminRequestDTO adminRequestDTO) {
         String username = adminRequestDTO.getUsernameOfAdmin();
         log.info("USER WANT TO SET ADMIN ROLE");
@@ -41,14 +39,6 @@ public class AdminController {
             log.info("USER SET ADMIN ROLE FAILED");
             return ResponseEntity.badRequest().body(setAdminRoleResult);
         }
-    }
-
-    @MessageMapping("/announce")
-    public ResponseEntity<String> announceNewAdmin(@Payload String newAdmin) {
-        log.info(newAdmin+"IS SET TO ADMIN");
-        WebSocketAnnouncementDTO webSocketAnnouncementDTO = new WebSocketAnnouncementDTO(ServerEvent.EVENT_SET_ADMIN, newAdmin);
-        webSocketService.sendMessage(webSocketAnnouncementDTO);
-        return ResponseEntity.ok("SEND MESSAGE SUCCESSFULLY");
     }
 
 

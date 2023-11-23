@@ -93,7 +93,7 @@ public class RepoControllerTest {
 
         when(repoService.getAllRepoByUsername(0, 4, "id", "vtt232")).thenReturn(expectedRepoDTOs);
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/jwt/repo/").with(oauth2Login()
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/api/jwt/repo/").with(oauth2Login()
                 .attributes(attrs -> attrs.put("login", "vtt232"))))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
@@ -123,7 +123,7 @@ public class RepoControllerTest {
 
         when(repoService.getAllRepoByUsername(0, 4, "id", "vtt232")).thenReturn(expectedRepoDTOs);
 
-       mockMvc.perform(MockMvcRequestBuilders.get("/jwt/repo/"))
+       mockMvc.perform(MockMvcRequestBuilders.get("/api/jwt/repo/"))
                 .andExpect(MockMvcResultMatchers.status().isUnauthorized());
     }
 

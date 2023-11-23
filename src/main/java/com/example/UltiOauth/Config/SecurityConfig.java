@@ -66,8 +66,8 @@ public class SecurityConfig {
     public SecurityFilterChain oauthSecurityFilterChain(HttpSecurity http) throws Exception {
         http.cors(cors -> cors.configurationSource(corsConfigurationSource())).csrf().disable()
                 .authorizeRequests(authorizeRequests -> authorizeRequests
-                        .antMatchers("/logout", "/access/**", "/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**", "/webjars/**").permitAll() // Define public endpoints
-                        .antMatchers("/oauth/**").authenticated()
+                        .antMatchers("/logout", "/api/access/**", "/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**", "/webjars/**").permitAll() // Define public endpoints
+                        .antMatchers("/api/oauth/**").authenticated()
                 )
                 .oauth2Login().successHandler(oAuth2LoginSuccessHandler); // Configure a custom success handler);
         return http.build();
@@ -78,8 +78,8 @@ public class SecurityConfig {
     public SecurityFilterChain jwtSecurityFilterChain(HttpSecurity http) throws Exception {
         http.cors(cors -> cors.configurationSource(corsConfigurationSource())).csrf().disable()
                 .authorizeRequests(authorizeRequests -> authorizeRequests
-                        .antMatchers("/logout","/access/**", "/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**", "/webjars/**").permitAll() // Define public endpoints
-                        .antMatchers("/jwt/**").authenticated()
+                        .antMatchers("/logout","/api/access/**", "/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**", "/webjars/**").permitAll() // Define public endpoints
+                        .antMatchers("/api/jwt/**").authenticated()
                 ).sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
                 .logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout", "GET")).logoutSuccessUrl(frontEndUrl).deleteCookies("jwtToken").clearAuthentication(true).invalidateHttpSession(true).permitAll().and()

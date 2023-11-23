@@ -1,5 +1,6 @@
 package com.example.UltiOauth.Controller;
 
+import com.example.UltiOauth.Annotation.RoutingWith;
 import com.example.UltiOauth.DTO.AdminRequestDTO;
 import com.example.UltiOauth.DTO.UserDTO;
 import com.example.UltiOauth.Entity.UserRole;
@@ -14,7 +15,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("jwt/user/")
+@RequestMapping("api/jwt/user")
 @Slf4j
 public class UserController {
 
@@ -26,6 +27,7 @@ public class UserController {
 
 
     @GetMapping(path="/infor", produces = "application/json")
+    @RoutingWith("${app.slavedb}")
     public ResponseEntity<UserDTO> getUserInformation(@AuthenticationPrincipal OAuth2User oAuth2User){
         if(oAuth2User == null){
             log.warn("USER IS NOT AUTHENTICATED");

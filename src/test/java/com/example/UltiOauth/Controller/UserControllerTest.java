@@ -61,7 +61,7 @@ public class UserControllerTest {
         when(userService.findByUsername(any())).thenReturn(expectedUserDTO);
 
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/jwt/user/infor").with(oauth2Login()))
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/jwt/user/infor").with(oauth2Login()))
                 .andExpect(status().isOk())
                 .andExpect(content().string(mapper.stringify(expectedUserDTO)));
 
@@ -70,7 +70,7 @@ public class UserControllerTest {
 
     @Test
     void getUserInformation_shouldReturnUnauthorizedStatus() throws Exception {
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/jwt/user/infor"))
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/api/jwt/user/infor"))
                 .andExpect(status().isUnauthorized())
                 .andReturn();
 

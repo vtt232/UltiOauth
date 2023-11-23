@@ -1,5 +1,6 @@
 package com.example.UltiOauth.Controller;
 
+import com.example.UltiOauth.Annotation.RoutingWith;
 import com.example.UltiOauth.DTO.NoteDTO;
 import com.example.UltiOauth.DTO.RepoDTO;
 import com.example.UltiOauth.Service.NoteService;
@@ -17,7 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("jwt/note")
+@RequestMapping("api/jwt/note")
 @Slf4j
 public class NoteController {
 
@@ -29,6 +30,7 @@ public class NoteController {
     }
 
     @GetMapping(path = "",produces = "application/json")
+    @RoutingWith("${app.slavedb}")
     public ResponseEntity<List<NoteDTO>> getAllNotesByRepoId(@RequestParam(name="repoId", defaultValue = "0") long repoId, @AuthenticationPrincipal OAuth2User oAuth2User)
     {
         if(oAuth2User == null){
@@ -42,6 +44,7 @@ public class NoteController {
     }
 
     @PostMapping(path="/{repoId}",produces = "application/json", consumes = "application/json")
+    @RoutingWith("${app.masterdb}")
     public ResponseEntity<List<NoteDTO>> addNote(@RequestBody NoteDTO newNote, @AuthenticationPrincipal OAuth2User oAuth2User,
                                  @PathVariable long repoId) {
         if(oAuth2User == null){
@@ -57,6 +60,7 @@ public class NoteController {
     }
 
     @PutMapping(path="/{repoId}/{noteId}",produces = "application/json", consumes = "application/json")
+    @RoutingWith("${app.masterdb}")
     public ResponseEntity<List<NoteDTO>> updateNote(@RequestBody NoteDTO updateNote, @AuthenticationPrincipal OAuth2User oAuth2User,
                                  @PathVariable long repoId, @PathVariable long noteId) {
         if(oAuth2User == null){
@@ -70,6 +74,7 @@ public class NoteController {
     }
 
     @DeleteMapping(path="/{repoId}/{noteId}",produces = "application/json")
+    @RoutingWith("${app.masterdb}")
     public ResponseEntity<List<NoteDTO>> deleteNote(@AuthenticationPrincipal OAuth2User oAuth2User,
                                     @PathVariable long repoId, @PathVariable long noteId) {
         if(oAuth2User == null){
