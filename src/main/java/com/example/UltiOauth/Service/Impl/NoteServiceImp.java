@@ -71,13 +71,11 @@ public class NoteServiceImp implements NoteService {
     @Override
     public List<NoteDTO> updateNote(NoteDTO newNote, String username, long repoId, long noteId) {
         log.info("STARTING UPDATING NOTE");
-        NoteEntity updateNoteEntity = NoteMapper.fromDtoToEntity(newNote,new NoteEntity());
-        Optional<RepoEntity> repoEntity = repoRepository.findReposByUsernameAndRepoId(username, repoId);
-        if(repoEntity.isPresent()){
-            log.info("FOUND REPO OF REQUIRED NOTE");
-            updateNoteEntity.setRepo(repoEntity.get());
-            updateNoteEntity.setId(noteId);
-            noteRepository.save(updateNoteEntity);
+        Optional<NoteEntity> updateNoteEntity = noteRepository.findNotesByNoteIdAndRepoIdAndUsername(username, repoId, noteId);
+        if(updateNoteEntity.isPresent()){
+            log.info("FOUND UPDATING NOTE");
+            updateNoteEntity.get().setContent(newNote.getContent());
+            noteRepository.save(updateNoteEntity.get());
             log.info("UPDATING NOTE SUCCESS");
             return getAllNotesByRepoIdAndUsername(username, repoId);
         }

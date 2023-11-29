@@ -47,7 +47,7 @@ public class UserServiceImp implements UserService {
         Optional<UserEntity> existedUserEntity = userRepository.findByUsername(user.getUsername());
 
         if(existedUserEntity.isPresent()){
-            log.warn("FOUND USER");
+            log.warn("USER IS EXISTED");
             throw new UserExistedException(user.getUsername());
         }
         else{
