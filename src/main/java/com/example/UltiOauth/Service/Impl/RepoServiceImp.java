@@ -33,31 +33,29 @@ public class RepoServiceImp implements RepoService {
     }
 
     public RepoDTO createRepo(RepoDTO repoDTO, String username){
-        log.info("STARTING ADDING REPO");
-        Optional<RepoEntity> existedRepoEntity = repoRepository.findReposByRepoName(repoDTO.getName());
+        log.info("STARTING FINDING OWNER");
+        Optional<UserEntity> userEntity = userRepository.findByUsername(username);
+        if(userEntity.isPresent()){
+            log.info("STARTING ADDING REPO");
+            Optional<RepoEntity> existedRepoEntity = repoRepository.findReposByRepoName(repoDTO.getName());
+            if(existedRepoEntity.isPresent()){
+                log.warn("REPO IS ALREADY EXISTED");
+                return RepoMapper.fromRepoToDto(existedRepoEntity.get());
+            }
+            else{
+                log.info("REPO IS NEW");
+                RepoEntity repoEntity = new RepoEntity();
+                repoEntity = RepoMapper.fromDtoToRepo(repoDTO, repoEntity);
 
-        if(existedRepoEntity.isPresent()){
-            log.warn("REPO IS ALREADY EXISTED");
-            return RepoMapper.fromRepoToDto(existedRepoEntity.get());
-        }
-        else{
-            log.info("REPO IS New");
-            RepoEntity repoEntity = new RepoEntity();
-            repoEntity = RepoMapper.fromDtoToRepo(repoDTO, repoEntity);
-            log.info("STARTING FINDING OWNER");
-            Optional<UserEntity> userEntity = userRepository.findByUsername(username);
-            if(userEntity.isPresent()){
-                log.info("FOUND OWNER");
                 repoEntity.setOwner(userEntity.get());
                 repoEntity = repoRepository.save(repoEntity);
                 return RepoMapper.fromRepoToDto(repoEntity);
             }
-            else{
-                throw new UserNotFoundException("User" + username + "IS NOT FOUND IN DB");
-            }
 
         }
-
+        else{
+            throw new UserNotFoundException("User" + username + "IS NOT FOUND IN DB");
+        }
     }
 
     public  List<RepoDTO> getAllRepoByUsername(int pageNo, int pageSize, String sortBy, String username){
