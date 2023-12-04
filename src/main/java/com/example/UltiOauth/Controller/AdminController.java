@@ -4,7 +4,6 @@ import com.example.UltiOauth.DTO.AdminRequestDTO;
 import com.example.UltiOauth.DTO.WebSocketAnnouncementDTO;
 import com.example.UltiOauth.Entity.ServerEvent;
 import com.example.UltiOauth.Service.AdminService;
-import com.example.UltiOauth.Service.WebSocketService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -21,11 +20,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class AdminController {
 
     private final AdminService adminService;
-    private final WebSocketService webSocketService;
 
-    public AdminController(AdminService adminService, WebSocketService webSocketService) {
+    public AdminController(AdminService adminService) {
         this.adminService = adminService;
-        this.webSocketService = webSocketService;
     }
 
     @PostMapping("/create-admin")
@@ -42,14 +39,5 @@ public class AdminController {
             return ResponseEntity.badRequest().body(setAdminRoleResult);
         }
     }
-
-    @MessageMapping("/announce")
-    public ResponseEntity<String> announceNewAdmin(@Payload String newAdmin) {
-        log.info(newAdmin+"IS SET TO ADMIN");
-        WebSocketAnnouncementDTO webSocketAnnouncementDTO = new WebSocketAnnouncementDTO(ServerEvent.EVENT_SET_ADMIN, newAdmin);
-        webSocketService.sendMessage(webSocketAnnouncementDTO);
-        return ResponseEntity.ok("SEND MESSAGE SUCCESSFULLY");
-    }
-
 
 }
