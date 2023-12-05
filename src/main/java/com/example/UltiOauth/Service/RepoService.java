@@ -21,7 +21,7 @@ import java.util.Optional;
 
 public interface RepoService {
 
-    public RepoDTO createRepo(RepoDTO repoDTO, String username);
+    RepoDTO createRepo(RepoDTO repoDTO, String username);
 
-    public  List<RepoDTO> getAllRepoByUsername(int pageNo, int pageSize, String sortBy, String username);
+    List<RepoDTO> getAllRepoByUsername(int pageNo, int pageSize, String sortBy, String username);
 }
