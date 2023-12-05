@@ -5,6 +5,7 @@ import com.example.UltiOauth.JWT.JwtAuthenticationFilter;
 import com.example.UltiOauth.JWT.JwtProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -26,6 +27,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.ShallowEtagHeaderFilter;
 
 import java.util.List;
 
@@ -59,6 +61,17 @@ public class SecurityConfig {
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
+    }
+
+    @Bean
+    protected FilterRegistrationBean<ShallowEtagHeaderFilter> buildEtagFilter() throws Exception {
+        ShallowEtagHeaderFilter etagFilter = new ShallowEtagHeaderFilter();
+        etagFilter.setWriteWeakETag(true);
+        FilterRegistrationBean<ShallowEtagHeaderFilter> filterRegistrationBean
+                = new FilterRegistrationBean<>( etagFilter);
+        filterRegistrationBean.addUrlPatterns("/jwt/note/**");
+        filterRegistrationBean.setName("etagFilter");
+        return filterRegistrationBean;
     }
 
     @Bean
