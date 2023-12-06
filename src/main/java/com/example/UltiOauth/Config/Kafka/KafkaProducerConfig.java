@@ -1,4 +1,4 @@
-package com.example.UltiOauth.Config;
+package com.example.UltiOauth.Config.Kafka;
 
 
 import com.example.UltiOauth.DTO.WebSocketAnnouncementDTO;

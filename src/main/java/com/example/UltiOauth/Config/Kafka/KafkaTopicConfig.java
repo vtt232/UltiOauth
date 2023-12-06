@@ -1,4 +1,4 @@
-package com.example.UltiOauth.Config;
+package com.example.UltiOauth.Config.Kafka;
 
 import org.apache.kafka.clients.admin.NewTopic;
 import org.springframework.context.annotation.Bean;
