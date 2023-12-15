@@ -10,4 +10,6 @@ import lombok.*;
 public class UserDTO {
     private String login;
     private String url;
+    private String role;
+
 }

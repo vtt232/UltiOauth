@@ -2,17 +2,17 @@ package com.example.UltiOauth.Controller;
 
 import com.example.UltiOauth.Annotation.RoutingWith;
 import com.example.UltiOauth.DTO.AdminRequestDTO;
+import com.example.UltiOauth.DTO.SystemStatisticsDTO;
 import com.example.UltiOauth.Entity.ServerEvent;
 import com.example.UltiOauth.Service.AdminService;
+import com.example.UltiOauth.Service.SystemStatisticsService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("api/jwt/admin")
@@ -20,9 +20,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class AdminController {
 
     private final AdminService adminService;
+    private final SystemStatisticsService systemStatisticsService;
 
-    public AdminController(AdminService adminService) {
+    public AdminController(AdminService adminService, SystemStatisticsService systemStatisticsService) {
         this.adminService = adminService;
+        this.systemStatisticsService = systemStatisticsService;
     }
 
     @PostMapping("/create-admin")
@@ -41,5 +43,17 @@ public class AdminController {
         }
     }
 
+    @GetMapping("/system-infor")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<SystemStatisticsDTO> getSystemInfor() {
+
+        log.info("ADMIN WANT TO GET SYSTEM INFORMATION");
+        SystemStatisticsDTO systemStatisticsDTO = systemStatisticsService.updateAndGet();
+
+        log.info("GET SYSTEM INFORMATION SUCCESSFULLY");
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(systemStatisticsDTO);
+
+
+    }
 
 }

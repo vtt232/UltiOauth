@@ -2,6 +2,7 @@ package com.example.UltiOauth.Service.Impl;
 
 import com.example.UltiOauth.DTO.WebSocketAnnouncementDTO;
 import com.example.UltiOauth.Event.SetAdminEvent;
+import com.example.UltiOauth.Event.UpdateSystemStatisticsEvent;
 import com.example.UltiOauth.Service.RestClientService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -64,7 +65,19 @@ public class RestClientServiceImp implements RestClientService {
     @Override
     @EventListener(classes = SetAdminEvent.class)
     public void notifySetAdmin(SetAdminEvent setAdminEvent) {
-        ProducerRecord<String, WebSocketAnnouncementDTO> record = new ProducerRecord<>("admin", "key", setAdminEvent.getWebSocketAnnouncementDTO());
+        ProducerRecord<String, WebSocketAnnouncementDTO> record = new ProducerRecord<>("admin", setAdminEvent.getWebSocketAnnouncementDTO().getReceiver(), setAdminEvent.getWebSocketAnnouncementDTO());
+        try {
+            kafkaTemplate.send(record);
+        } catch (KafkaException exception) {
+            log.error("Kafka ERROR WHEN NOTIFY SET ADMIN");
+            throw exception;
+        }
+    }
+
+    @Override
+    @EventListener(classes = UpdateSystemStatisticsEvent.class)
+    public void notifyUpdatingSystemStatistics(UpdateSystemStatisticsEvent updateSystemStatisticsEvent) {
+        ProducerRecord<String, WebSocketAnnouncementDTO> record = new ProducerRecord<>("event-observer", updateSystemStatisticsEvent.getWebSocketAnnouncementDTO().getReceiver(), updateSystemStatisticsEvent.getWebSocketAnnouncementDTO());
         try {
             kafkaTemplate.send(record);
         } catch (KafkaException exception) {
@@ -73,4 +86,6 @@ public class RestClientServiceImp implements RestClientService {
         }
 
     }
+
+
 }

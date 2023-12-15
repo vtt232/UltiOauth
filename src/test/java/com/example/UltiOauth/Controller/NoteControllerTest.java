@@ -10,6 +10,7 @@ import com.example.UltiOauth.Exception.RepoNotFoundException;
 import com.example.UltiOauth.JWT.JwtProvider;
 import com.example.UltiOauth.Service.NoteService;
 import com.example.UltiOauth.Service.RepoService;
+import com.example.UltiOauth.Service.RestClientService;
 import com.example.UltiOauth.Service.UserService;
 import com.example.UltiOauth.Utils.JsonMapper;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -37,6 +38,7 @@ import static org.hamcrest.Matchers.samePropertyValuesAs;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.oauth2Login;
 
@@ -68,6 +70,9 @@ public class NoteControllerTest {
 
     @MockBean
     WebClient webClient;
+
+    @MockBean
+    RestClientService restClientService;
 
 
     private static final ObjectMapper mapper = new ObjectMapper();
