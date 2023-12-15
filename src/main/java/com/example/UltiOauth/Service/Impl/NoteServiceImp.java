@@ -1,8 +1,12 @@
 package com.example.UltiOauth.Service.Impl;
 
 import com.example.UltiOauth.DTO.NoteDTO;
+import com.example.UltiOauth.DTO.WebSocketAnnouncementDTO;
 import com.example.UltiOauth.Entity.NoteEntity;
 import com.example.UltiOauth.Entity.RepoEntity;
+import com.example.UltiOauth.Entity.ServerEvent;
+import com.example.UltiOauth.Event.SetAdminEvent;
+import com.example.UltiOauth.Event.UpdateSystemStatisticsEvent;
 import com.example.UltiOauth.Exception.NoteNotFoundException;
 import com.example.UltiOauth.Exception.RepoNotFoundException;
 import com.example.UltiOauth.Mapper.NoteMapper;
@@ -10,6 +14,8 @@ import com.example.UltiOauth.Repository.NoteRepository;
 import com.example.UltiOauth.Repository.RepoRepository;
 import com.example.UltiOauth.Service.NoteService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -23,9 +29,13 @@ public class NoteServiceImp implements NoteService {
     private final NoteRepository noteRepository;
     private final RepoRepository repoRepository;
 
-    public NoteServiceImp(NoteRepository noteRepository, RepoRepository repoRepository) {
+    @Autowired
+    private ApplicationEventPublisher applicationEventPublisher;
+
+    public NoteServiceImp(NoteRepository noteRepository, RepoRepository repoRepository, ApplicationEventPublisher applicationEventPublisher) {
         this.noteRepository = noteRepository;
         this.repoRepository = repoRepository;
+        this.applicationEventPublisher = applicationEventPublisher;
     }
 
 
@@ -60,6 +70,12 @@ public class NoteServiceImp implements NoteService {
             newNoteEntity.setRepo(repoEntity.get());
             noteRepository.save(newNoteEntity);
             log.info("ADDING NOTE SUCCESS");
+
+            WebSocketAnnouncementDTO webSocketAnnouncementDTO = new WebSocketAnnouncementDTO(ServerEvent.CHANGE_NUMBER_OF_NOTE, username);
+            UpdateSystemStatisticsEvent updateSystemStatisticsEvent = new UpdateSystemStatisticsEvent(this, webSocketAnnouncementDTO);
+            applicationEventPublisher.publishEvent(updateSystemStatisticsEvent);
+
+
             return getAllNotesByRepoIdAndUsername(username, repoId);
         }
         else {
@@ -92,6 +108,11 @@ public class NoteServiceImp implements NoteService {
             log.info("FOUND DELETING NOTE");
             noteRepository.delete(deleteNoteEntity.get());
             log.info("DELETING NOTE SUCCESS");
+
+            WebSocketAnnouncementDTO webSocketAnnouncementDTO = new WebSocketAnnouncementDTO(ServerEvent.CHANGE_NUMBER_OF_NOTE, username);
+            UpdateSystemStatisticsEvent updateSystemStatisticsEvent = new UpdateSystemStatisticsEvent(this, webSocketAnnouncementDTO);
+            applicationEventPublisher.publishEvent(updateSystemStatisticsEvent);
+
             return getAllNotesByRepoIdAndUsername(username, repoId);
         }
         else{

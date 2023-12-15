@@ -1,14 +1,19 @@
 package com.example.UltiOauth.Service.Impl;
 
 import com.example.UltiOauth.DTO.RepoDTO;
+import com.example.UltiOauth.DTO.WebSocketAnnouncementDTO;
 import com.example.UltiOauth.Entity.RepoEntity;
+import com.example.UltiOauth.Entity.ServerEvent;
 import com.example.UltiOauth.Entity.UserEntity;
+import com.example.UltiOauth.Event.UpdateSystemStatisticsEvent;
 import com.example.UltiOauth.Exception.UserNotFoundException;
 import com.example.UltiOauth.Mapper.RepoMapper;
 import com.example.UltiOauth.Repository.RepoRepository;
 import com.example.UltiOauth.Repository.UserRepository;
 import com.example.UltiOauth.Service.RepoService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -26,10 +31,14 @@ public class RepoServiceImp implements RepoService {
 
     private final UserRepository userRepository;
 
+    @Autowired
+    private ApplicationEventPublisher applicationEventPublisher;
 
-    public RepoServiceImp(RepoRepository repoRepository, UserRepository userRepository){
+
+    public RepoServiceImp(RepoRepository repoRepository, UserRepository userRepository, ApplicationEventPublisher applicationEventPublisher){
         this.repoRepository = repoRepository;
         this.userRepository = userRepository;
+        this.applicationEventPublisher = applicationEventPublisher;
     }
 
     public RepoDTO createRepo(RepoDTO repoDTO, String username){
@@ -49,6 +58,12 @@ public class RepoServiceImp implements RepoService {
 
                 repoEntity.setOwner(userEntity.get());
                 repoEntity = repoRepository.save(repoEntity);
+                log.info("CREATED REPO SUCCESSFULLY");
+
+                WebSocketAnnouncementDTO webSocketAnnouncementDTO = new WebSocketAnnouncementDTO(ServerEvent.CHANGE_NUMBER_OF_REPO, username);
+                UpdateSystemStatisticsEvent updateSystemStatisticsEvent = new UpdateSystemStatisticsEvent(this, webSocketAnnouncementDTO);
+                applicationEventPublisher.publishEvent(updateSystemStatisticsEvent);
+
                 return RepoMapper.fromRepoToDto(repoEntity);
             }
 

@@ -3,7 +3,6 @@ package com.example.UltiOauth.Controller;
 
 import com.example.UltiOauth.Config.OAuth2LoginSuccessHandler;
 import com.example.UltiOauth.Config.SecurityConfig;
-import com.example.UltiOauth.Config.WebSocketConfig;
 import com.example.UltiOauth.DTO.AdminRequestDTO;
 import com.example.UltiOauth.DTO.NoteDTO;
 import com.example.UltiOauth.JWT.JwtProvider;
@@ -43,7 +42,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(AdminController.class)
 @ContextConfiguration(classes = { AdminController.class,
-        SecurityConfig.class, OAuth2LoginSuccessHandler.class, WebSocketConfig.class},
+        SecurityConfig.class, OAuth2LoginSuccessHandler.class},
         initializers = ConfigDataApplicationContextInitializer.class)
 @AutoConfigureMockMvc
 public class AdminControllerTest {
@@ -70,8 +69,7 @@ public class AdminControllerTest {
     @MockBean
     WebClient webClient;
 
-    @MockBean
-    WebSocketService webSocketService;
+
 
 
     private static final ObjectMapper mapper = new ObjectMapper();

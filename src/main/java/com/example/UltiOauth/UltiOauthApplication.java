@@ -10,6 +10,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 public class UltiOauthApplication {
 
 	public static void main(String[] args) {
+
 		SpringApplication.run(UltiOauthApplication.class, args);
 	}
 
