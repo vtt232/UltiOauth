@@ -69,6 +69,9 @@ public class AdminControllerTest {
     @MockBean
     WebClient webClient;
 
+    @MockBean
+    SystemStatisticsService systemStatisticsService;
+
 
 
 
